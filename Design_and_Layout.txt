@@ -1,0 +1,20 @@
+
+The idea is to do the sting management in python. This presents some
+problems: All variables need to be set from within the current shell. We
+therefore need to do something like this:
+
+function env-watcher {
+    eval $(EnvWatcher/envwatcher.py $@ <<EOF
+ENV_WATCHER: ENVIRONEMT
+$(env)
+ENV_WATCHER: LOCALS
+$(set)
+ENV_WATCHER: ALIAS
+$(alias)
+EOF
+    )
+}
+
+the main work is obviously done in envwatcher.py. The standard output of
+envwathcer.py contains the necessary shell statements the change the
+environment to the desired state.
