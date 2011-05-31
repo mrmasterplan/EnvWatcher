@@ -1,4 +1,5 @@
-
+#
+# This is setup.sh, the setup script of EnvWathcer for the Bourne Again SHell
 # This file needs to be sourced. It cannot be executed.
 
 
@@ -8,23 +9,31 @@ export ENV_WATCHER_DIR="$(pwd)"
 cd $OLDDIR
 unset OLDDIR
 
-export ENV_WATCHER_SESSION=$(mktemp -d /tmp/EnvWatcher_session_XXXXXXXX)
+export ENV_WATCHER_SESSION=$(python -c "import tempfile; print tempfile.mkdtemp(prefix='EnvWatcher_session_')")
 
 function env-watcher {
-    #This is done so that the tag-lines do not appear in the
-    # definition of this function, which of course is itself part of
-    # the environment.
-    var1="ENVIRONMENT"
-    var2="LOCALS"
-    var3="ALIAS"
-    
-    eval $($ENV_WATCHER_DIR/envwatcher.py $@ <<EOF
-ENV_WATCHER: ${var1}
+    local env_tag="ENV_WATCHER_ENVIRONMENT"
+    local loc_tag="ENV_WATCHER_LOCALS"
+    local ali_tag="ENV_WATCHER_ALIAS"
+    export ENV_WATCHER_INPUT="${env_tag}>>
 $(env)
-ENV_WATCHER: ${var2}
+<<${env_tag}
+${loc_tag}>>
 $(set)
-ENV_WATCHER: ${var3}
+<<${loc_tag}
+${ali_tag}>>
 $(alias)
-EOF
-    )
+<<${ali_tag}
+"
+    local output="$( ${ENV_WATCHER_DIR}/python/env-watcher $@ )"
+    unset ENV_WATCHER_INPUT
+
+    echo "${output}"
+    # echo "${output%%ENVIRONMENT_FOLLOWS*}"
+    # # echo ENVIRONMENT_FOLLOWS
+    # if [ ! -z "$(echo $output | grep ENVIRONMENT_FOLLOWS)" ]
+    #     then
+    #     eval "${output##*ENVIRONMENT_FOLLOWS}"
+    # fi
+    
 }

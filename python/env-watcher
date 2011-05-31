@@ -1,0 +1,61 @@
+#!/usr/bin/env python
+
+import os
+import sys
+
+def main():
+    all_input = os.environ["ENV_WATCHER_INPUT"]
+    if not all_input:
+        print "This executable needs to be called from within the shell function env-watcher."
+        print "Please source the relevant setup script and procceed from there."
+        return 127
+        
+    # some setup paths:
+    session_directory = os.environ["ENV_WATCHER_SESSION"]
+    main_directory = os.environ["ENV_WATCHER_DIR"]
+    
+    if not session_directory or not main_directory:
+        print >>sys.stderr, "Your EnvWatcher environment was not properly set up. Please use the included setup files."
+        return 127
+    #Make sure we can include our own stuff
+    sys.path.append(main_directory+os.sep+"python")
+    
+    from env_manager import env_manager
+    
+    import argparse
+    parser = argparse.ArgumentParser(description='Monitor the shell environment')
+    parser.add_argument("action",action="store", choices=env_manager.action_names, help="action to perform. Use 'usage' for full explanations.")
+    parser.add_argument("name",action="store", nargs="?", default="",help="Chosen name for the recording session.")
+    
+    args=parser.parse_args(sys.argv[1:])
+    action=env_manager.action_names[args.action]
+    import inspect
+    if "name" in inspect.getargspec(action)[0] and not args.name:
+        print >>sys.stderr, "The action '%s' requires the 'name' argument." % args.action
+        return 127
+    
+    
+    import ShellInteractor
+    shell = ShellInteractor.ShellInteractor(os.environ["SHELL"])
+    
+    manager = env_manager(shell=shell, session_dir=session_directory, main_dir=main_directory)
+    
+    
+    log=open(main_directory+"/log.tmp","w")
+    log.write(all_input)
+    log.close()
+    
+    manager.ReadInput(all_input)
+    
+    return action(manager,name=args.name)
+    
+    
+    
+if __name__ == '__main__':
+    main()
+    # try:
+    #     res=main()
+    # except Exception, e:
+    #     print "Exception:",e.message
+    #     res=127
+    # sys.exit(res)

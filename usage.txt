@@ -1,0 +1,28 @@
+
+    env-watcher
+    ===========
+
+The intention of this tool is to allow you to determine the
+differences in your environment between two points in time,
+and to undo those differences at a later time.
+
+usage is as follows:
+
+env-watcher record MyName
+    Take the 'before' snapshot of the environemt.
+    Call the snapshot "MyName".
+    
+env-watcher stop MyName
+    Take the 'after' snapshot of the environemt.
+    Compare it to the previous snapshot called "MyName",
+    compute the differences between the two in an intelligent 
+    way and save this difference under the name "MyName".
+    
+env-watcher revert MyName
+    Read the difference file "MyName", (if it hasn't been 
+    stopped yet, do that now.) and revmove the changes that
+    it contains from the environment
+    
+env-watcher usage
+    Print this usage.
+
