@@ -1,4 +1,17 @@
 #!/usr/bin/env python
+# 
+# This is the main executable of the env-watcher.
+# 
+# It is called from within the shell function that passes the entire 
+# environment to this executable. The shell function also takes care of 
+# executing possible corrective changes in the shell environment afterwards.
+# 
+# The design of this package is such that all shell-specific code is imported
+# dynamically by ShellParser.GetShellParser. At the moment I only have code 
+# for the Bash-shell, but that may change at some point.
+# 
+# All the managing, storing and diff-ing are done on shell-independent 
+# objects defined in EnvironmentObjects.
 
 import os
 import sys
@@ -34,18 +47,17 @@ def main():
         print >>sys.stderr, "The action '%s' requires the 'name' argument." % args.action
         return 127
     
-    
-    import ShellInteractor
-    shell = ShellInteractor.ShellInteractor(os.environ["SHELL"])
-    
-    manager = env_manager(shell=shell, session_dir=session_directory, main_dir=main_directory)
-    
-    
     log=open(main_directory+"/log.tmp","w")
     log.write(all_input)
     log.close()
     
-    manager.ReadInput(all_input)
+    
+    from ShellParser import GetShellParser
+    shellParser = GetShellParser(os.environ["SHELL"])
+    
+    shell = shellParser(conf_dir=main_directory+"/config", input=all_input)
+    
+    manager = env_manager(shell=shell, session_dir=session_directory, main_dir=main_directory)
     
     return action(manager,name=args.name)
     

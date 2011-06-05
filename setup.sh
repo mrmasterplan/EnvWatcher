@@ -2,38 +2,36 @@
 # This is setup.sh, the setup script of EnvWathcer for the Bourne Again SHell
 # This file needs to be sourced. It cannot be executed.
 
-
-OLDDIR=$PWD
+previous_PWD=$PWD
+previous_OLDPWD=$OLDPWD
 cd $(dirname $BASH_SOURCE)
 export ENV_WATCHER_DIR="$(pwd)"
-cd $OLDDIR
-unset OLDDIR
+cd $previous_PWD
+OLDPWD=$previous_OLDPWD
+unset previous_PWD
+unset previous_OLDPWD
 
 export ENV_WATCHER_SESSION=$(python -c "import tempfile; print tempfile.mkdtemp(prefix='EnvWatcher_session_')")
 
 function env-watcher {
-    local env_tag="ENV_WATCHER_ENVIRONMENT"
-    local loc_tag="ENV_WATCHER_LOCALS"
-    local ali_tag="ENV_WATCHER_ALIAS"
-    export ENV_WATCHER_INPUT="${env_tag}>>
+	export ENV_WATCHER_INPUT="ENV_WATCHER_ENVIRONMENT>>
 $(env)
-<<${env_tag}
-${loc_tag}>>
+ENV_WATCHER_LOCALS>>
 $(set)
-<<${loc_tag}
-${ali_tag}>>
+ENV_WATCHER_ALIAS>>
 $(alias)
-<<${ali_tag}
 "
-    local output="$( ${ENV_WATCHER_DIR}/python/env-watcher $@ )"
-    unset ENV_WATCHER_INPUT
+	local output="$( ${ENV_WATCHER_DIR}/python/env-watcher $@ )"
+	unset ENV_WATCHER_INPUT
 
-    echo "${output}"
-    # echo "${output%%ENVIRONMENT_FOLLOWS*}"
-    # # echo ENVIRONMENT_FOLLOWS
-    # if [ ! -z "$(echo $output | grep ENVIRONMENT_FOLLOWS)" ]
-    #     then
-    #     eval "${output##*ENVIRONMENT_FOLLOWS}"
-    # fi
-    
+	if [ ! -z "$( echo ${output} | grep 'CODE_FOLLOWS>>' )" ]
+		then
+		echo -n "${output%%CODE_FOLLOWS>>*}"
+		# echo "Now comes code:"
+		# echo "${output##*CODE_FOLLOWS>>}"
+		eval "${output##*CODE_FOLLOWS>>}"
+	else
+		echo "${output}"
+	fi
+	
 }

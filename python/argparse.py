@@ -1,10 +1,8 @@
 # Author: Steven J. Bethard <steven.bethard@gmail.com>.
 # This is the standard python module argparse.
 # I have included it here because it is not standard until python 2.7
-# I hope noone minds.
-# /Simon
-
-# import pdb
+# I hope no-one minds.
+# /Simon Heisterkamp
 
 """Command-line parsing library
 
@@ -2159,7 +2157,6 @@ class ArgumentParser(_AttributeHolder, _ActionsContainer):
 
         # all others should be integers
         else:
-            # pdb.set_trace()
             nargs_pattern = '(-*%s-*)' % '-*'.join('A' * nargs)
 
         # if this is an optional action, -- is not allowed

@@ -22,7 +22,11 @@ env-watcher revert MyName
     Read the difference file "MyName", (if it hasn't been 
     stopped yet, do that now.) and revmove the changes that
     it contains from the environment
-    
+
+env-watcher reapply MyName
+
+env-watcher display MyName
+
 env-watcher usage
     Print this usage.
 
