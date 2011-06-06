@@ -256,7 +256,7 @@ class EWDiffObject(object):
         out = self.key()._typename+'("%s"):' % self.key().name
         # out = repr(self.key())
         if self.pathdiff:
-            out+="\n{ "
+            out+="\n{ Path difference:"
             if self.added:
                 out+="\n     added: "+":".join(self.added)
             if self.removed:
