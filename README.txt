@@ -2,47 +2,33 @@ This is EnvWatcher.
 ===================
 A project by Simon Heisterkamp (heisterkamp@nbi.dk)
 
-The project has just been launched and is not functional yet.
+SETUP
+=====
+Simply source the script setup.sh
 
-The intention is the following:
+    $ source path/to/EnvWatcher/setup.sh
 
-One sources a setup script like this: source EnvWatcher/setup.sh
+You will now have access to the command env-watcher.
+Full usage information can be found in the file usage.txt or by calling 
 
-after that the function env-watcher is available. It can be used like
-this:
+    $ env-watcher usage
 
-At any point one can call:
+Description
+===========
 
-$ envwatcher record MyName 
-started Mon 30 May 2011 11:31:44 CEST $
+env-watcher is able to monitor your bash environment and record changes that you make to
+it. One can then ask the env-watcher to undo those changes.
 
-After that any changes that are made to the local variables, environment
-variables or alias are recorded.
+In its functionallity the env-watcher is not unlike other dynamic environment loaders
+like, for example, 'module' (http://modules.sourceforge.net/). However, module requires
+the user to write special tcl modules in order to be able to load and unload them. The
+advantage of env-wrapper is that it can accept and recognize changes made by any other
+shell-script because it relies on 'before' and 'after' snapshots of the shell
+environment.
 
-stop recording by calling
+env-watcher monitors
+    - environment variables
+    - local variables
+    - shell functions
+    - aliases
 
-$ envwatcher stop MyName 
-Environment record saved to $ENV_WATCHER_SESSION/MyName.env
-
-The EnvWatcher makes a diff of the environments before and after the
-recording period, watching for new variables, removed variables, changed
-variables, prepended path-like variables. At any later time the change
-can be undone by calling:
-
-$ envwatcher revert MyName
-Environment change reverted from file $ENV_WATCHER_SESSION/MyName.env 
-
-A revert can also be issued to a currently recording session, thus
-allowing things like $ envwatcher record Clean # at the start of a
-session $ envwathcer revert Clean # at any later time.
-
-Another use mode is to call "save":
-
-$ envwatcher save MyState
-
-This is less clever and will save the current state without any checks.
-The state can be recovered by calling
-
-$ envwacher revert MyState
-
-Just like in the previous case.

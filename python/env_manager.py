@@ -9,7 +9,9 @@ class env_manager(object):
     
     tag_line = "CODE_FOLLOWS>>"
     session_pattern = "session_%s_.log"
+    session_match = "/session_(?P<name>.*)_.log$"
     state_pattern = "state_%s_.log"
+    state_match = "/state_(?P<name>.*)_.log$"
     
     def __init__(self, shell, session_dir, main_dir):
         super(env_manager, self).__init__()
@@ -21,15 +23,23 @@ class env_manager(object):
     def SanityCheckName(self,name):
         if not re.match("""[a-zA-Z0-9_]+""", name):
             raise Exception("Invalid name. Letters, numbers and underscores only.")
-        
-    def ConstructDifference( old, new ):
-        pass
     
-    def RevertDifference(env, diff):
-        pass
+    def ConstructDifference( old_env, new_env ):
+        from EnvironmentObjects import EWDiffObject
+        diff = {}
+        keys = set(new_env.keys() + old_env.keys())
+        for key in keys:
+            if key not in new_env:
+                diff[key] = EWDiffObject(old=old_env[key])
+            elif key not in old_env:
+                diff[key] = EWDiffObject(new=new_env[key])
+            else:
+                if old_env[key] != new_env[key]:
+                    diff[key] = EWDiffObject(old=old_env[key], new=new_env[key])
+        return diff
     
     # the following defines the set of possible actions that a user can choose from.
-    def record(self,name):
+    def start(self,name):
         self.SanityCheckName(name)
         session_file_name = self.session_dir + os.sep + self.session_pattern % name
         if os.path.exists( session_file_name ):
@@ -58,18 +68,8 @@ class env_manager(object):
         new_env = self.shell.environment
         old_env = pickle.load(open(session_file_name))
         os.remove(session_file_name) # just cleaning up as I go along
-        from EnvironmentObjects import EWDiffObject
         
-        diff = {}
-        keys = set(new_env.keys() + old_env.keys())
-        for key in keys:
-            if key not in new_env:
-                diff[key] = EWDiffObject(old=old_env[key])
-            elif key not in old_env:
-                diff[key] = EWDiffObject(new=new_env[key])
-            else:
-                if old_env[key] != new_env[key]:
-                    diff[key] = EWDiffObject(old=old_env[key], new=new_env[key])
+        diff = self.ConstructDifference(old_env,new_env)
         
         state_file = open(state_file_name,"w")
         pickle.dump(diff,state_file)
@@ -80,26 +80,28 @@ class env_manager(object):
         return 0
     
     
-    def revert(self,name):
+    def undo(self,name):
         return self.reapply(name,Reverse=True)
     
-    def reapply(self,name,Reverse = False):
+    def redo(self,name,Reverse = False):
         self.SanityCheckName(name)
         
         import os, pickle, sys
         session_file_name = self.session_dir + os.sep + self.session_pattern % name
         state_file_name = self.session_dir + os.sep + self.state_pattern % name
-        if not os.path.exists(state_file_name):
-            if os.path.exists(session_file_name):
-                print >>sys.stderr, "Session '%s' is still open. Please close it first."% name
-            else:
-                print >>sys.stderr, "Unknown session '%s'"%name
+        
+        if os.path.exists(state_file_name):
+            state_file = open(state_file_name)
+            state = pickle.load(state_file)
+            state_file.close()
+        elif os.path.exists(session_file_name):
+            old_env = pickle.load(open(session_file_name))
+            state = self.ConstructDifference(old_env,self.shell.environment)
+        else:
+            print >>sys.stderr, "Unknown recording '%s'"%name
             print self.tag_line
             return 127
         
-        state_file = open(state_file_name)
-        state = pickle.load(state_file)
-        state_file.close()
         
         env = self.shell.environment
         if not Reverse:
@@ -140,5 +142,27 @@ class env_manager(object):
         print self.tag_line
         return 0
     
-    actions = [record, stop, revert, reapply, usage, display ]
+    def list(self,**kwargs):
+        session_file_name = self.session_dir + os.sep + self.session_pattern % "*"
+        state_file_name = self.session_dir + os.sep + self.state_pattern % "*"
+        import glob
+        session_files = glob.glob(session_file_name)
+        state_files = glob.glob(state_file_name)
+        if session_files:
+            print "Open sessions:"
+            for name in session_files:
+                print "\t%s"%re.search(self.session_match,name).group("name")
+        else:
+            print "No open sessions."
+        if state_files:
+            print "Avaliable records:"
+            for name in state_files:
+                print "\t%s"%re.search(self.state_match,name).group("name")
+        else:
+            print "No records avaliable."
+        print self.tag_line
+        return 0
+    
+        
+    actions = [ usage, start, stop, undo, redo, list, display ]
     action_names = { a.func_name:a for a in actions }

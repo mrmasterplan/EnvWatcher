@@ -2,31 +2,32 @@
     env-watcher
     ===========
 
-The intention of this tool is to allow you to determine the
-differences in your environment between two points in time,
-and to undo those differences at a later time.
+  The intention of this tool is to allow you to determine the
+  differences in your environment between two points in time,
+  and to undo and reapply those differences at a later time.
 
-usage is as follows:
+  Usage is as follows:
 
-env-watcher record MyName
-    Take the 'before' snapshot of the environemt.
-    Call the snapshot "MyName".
-    
-env-watcher stop MyName
-    Take the 'after' snapshot of the environemt.
-    Compare it to the previous snapshot called "MyName",
-    compute the differences between the two in an intelligent 
-    way and save this difference under the name "MyName".
-    
-env-watcher revert MyName
-    Read the difference file "MyName", (if it hasn't been 
-    stopped yet, do that now.) and revmove the changes that
-    it contains from the environment
+  env-watcher usage
+    Print this usage information.
 
-env-watcher reapply MyName
+  env-watcher start MyName
+    Start a recording session called "MyName".
 
-env-watcher display MyName
+  env-watcher stop MyName
+    Stop the recording session called "MyName".
+    The difference between the start and the stop point will
+    be saved to a state called "MyName" and are now available
+    for undoing and redoing.
 
-env-watcher usage
-    Print this usage.
+  env-watcher undo MyName
+    Revert all changes made to the environment in the recording
+    session called "MyName"
 
+  env-watcher redo MyName
+    Reapply the changes made to the environment in the recording
+    session called "MyName"
+
+  env-watcher display MyName
+    Display a list of changes made to the environment in the 
+    recording session called "MyName"
