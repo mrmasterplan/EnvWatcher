@@ -102,6 +102,7 @@ class BashInteractor(object):
                 continue
             if line == self._env_tag:
                 break
+        lastobj = BashEnvVariable("dummy")
         for line in intext:
             if not line:
                 continue
@@ -110,9 +111,13 @@ class BashInteractor(object):
             # Now ready to parse environment
             # every line here has be be of the same form
             if not BashEnvVariable.Matches(line):
-                print >>sys.stderr,"Warning: unknown bash environment line:\n\t=>"+line
+                # For now I will assume this belongs to the last value:
+                # TODO: Look for unclosed {} in the last value before making this assumption 
+                # print >>sys.stderr,"Warning: unknown bash environment line:\n\t=>"+line
+                lastobj.value+="\n"+line
                 continue
             obj = BashEnvVariable.Parse(line)
+            lastobj=obj
             if obj.name in self.ignore:
                 continue
             env_dict[obj.key()] = obj
