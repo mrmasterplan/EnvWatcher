@@ -22,15 +22,18 @@
 
   env-watcher undo MyName
     Revert all changes made to the environment in the recording
-    session called "MyName"
+    session called "MyName".
+    Can be called on an open session.
 
   env-watcher redo MyName
     Reapply the changes made to the environment in the recording
     session called "MyName"
+    Can be called on an open session (although this doesn't make much sense).
 
   env-watcher display MyName
     Display a list of changes made to the environment in the 
     recording session called "MyName"
+    Can be called on an open session.
   
   env-watcher list
     List the avaliable open recording sessions and closed records.
