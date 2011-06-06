@@ -31,3 +31,6 @@
   env-watcher display MyName
     Display a list of changes made to the environment in the 
     recording session called "MyName"
+  
+  env-watcher list
+    List the avaliable open recording sessions and closed records.

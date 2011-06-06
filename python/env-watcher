@@ -68,6 +68,9 @@ if __name__ == '__main__':
     # try:
     #     res=main()
     # except Exception, e:
-    #     print "Exception:",e.message
+    #     import sys
+    #     print >>sys.stderr, "ERROR:",e.message
+    #     from env_manager import tag_line
+    #     print tag_line
     #     res=127
     # sys.exit(res)

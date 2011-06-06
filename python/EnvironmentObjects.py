@@ -244,6 +244,32 @@ class EWDiffObject(object):
             out+=" { '%s' => '%s' }" %(repr(self.old),repr(self.new))
         return out
     
+    def Display(self):
+        out = self.key()._typename+'("%s"):' % self.key().name
+        # out = repr(self.key())
+        if self.pathdiff:
+            out+="\n{ "
+            if self.added:
+                out+="\n     added: "+":".join(self.added)
+            if self.removed:
+                out+="\n   removed: "+":".join(self.removed)
+            if self.inversions:
+                out+="\ninversions: "+repr(self.inversions)
+            out+="\n}"
+        else:
+            if self.old:
+                oldval = "'%s'" % self.old.value
+            else:
+                oldval = "n/a"
+            if self.new:
+                newval = "'%s'" % self.new.value
+            else:
+                newval = "n/a"
+            
+            out+=" { %s => %s }" %(oldval,newval)
+        return out
+    
+    
     def Apply(self, env, Reverse =False):
         #Get the object ready
         if self.key() in env:
