@@ -109,7 +109,9 @@ class BashInteractor(object):
                 break
             # Now ready to parse environment
             # every line here has be be of the same form
-            assert( BashEnvVariable.Matches(line) )
+            if not BashEnvVariable.Matches(line):
+                print >>sys.stderr,"Warning: unknown bash environment line:\n\t=>"+line
+                continue
             obj = BashEnvVariable.Parse(line)
             if obj.name in self.ignore:
                 continue
@@ -133,7 +135,8 @@ class BashInteractor(object):
                     if obj.ParseBodyLine(line):
                         break
             else:
-                raise AssertionError("Unknown line in local environment: "+line)
+                print >>sys.stderr,"Warning: unknown bash local environment line:\n\t=>"+line
+                continue
             if obj.name in self.ignore:
                 continue
             
@@ -143,7 +146,9 @@ class BashInteractor(object):
             if not line:
                 continue
             # Now ready to parse alias
-            assert( BashAlias.Matches(line) )
+            if not BashAlias.Matches(line):
+                print >>sys.stderr,"Warning: unknown bash alias:\n\t=>"+line
+                continue
             obj = BashAlias.Parse(line)
             if obj.name in self.ignore:
                 continue
