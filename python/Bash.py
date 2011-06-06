@@ -6,15 +6,15 @@ from StringIO import StringIO
 
 from EnvironmentObjects import EnvVariable, LocVariable, LocFunction, Alias, EWObjKey
 
-# def EscapeSingleQuotes(line):
-#     return re.sub("""(?=')""","""\\\\""",line)
+def EscapeSingleQuotes(line):
+    return line.replace("'","\\'")
 
 class BashEnvVariable(EnvVariable):
     """docstring for BashEnvVariable"""
     _pattern = re.compile("""^(?P<name>[^= ]+?)=(?P<value>.*)\n?$""")
         
     def DefineCode(self):
-        return "export %s=%s;" % (self._name, self._value)
+        return "export %s='%s';" % (self._name, EscapeSingleQuotes(self._value))
     
     def RemoveCode(self):
         return "unset %s;\n" % self.name 
@@ -26,7 +26,7 @@ class BashLocVariable(LocVariable):
     _pattern = re.compile("""^(?P<name>[^= ]+?)=(?P<value>.*)\n?$""")
     
     def DefineCode(self):
-        return "%s=%s;" % (self._name, self._value)
+        return "%s='%s';" % (self._name, EscapeSingleQuotes(self._value))
     
     def RemoveCode(self):
         return "unset %s;\n" % self.name 

@@ -74,7 +74,7 @@ if __name__ == '__main__':
             res=main()
         except Exception, e:
             import sys
-            print >>sys.stderr, "ERROR:",e.message
+            print >>sys.stderr, "ERROR:",e
             from env_manager import tag_line
             print tag_line
             res=127
