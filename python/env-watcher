@@ -37,6 +37,7 @@ def main():
     
     import argparse
     parser = argparse.ArgumentParser(description='Monitor the shell environment')
+    parser.add_argument("-d", action="store_const", const=True, default=False, help="enable debug mode")
     parser.add_argument("action",action="store", choices=env_manager.action_names, help="action to perform. Use 'usage' for full explanations.")
     parser.add_argument("name",action="store", nargs="?", default="",help="Chosen name for the recording session.")
     
@@ -64,13 +65,16 @@ def main():
     
     
 if __name__ == '__main__':
-    # main()
-    try:
-        res=main()
-    except Exception, e:
-        import sys
-        print >>sys.stderr, "ERROR:",e.message
-        from env_manager import tag_line
-        print tag_line
-        res=127
-    sys.exit(res)
+    import sys
+    if "-d" in sys.argv:
+        main()
+    else:
+        try:
+            res=main()
+        except Exception, e:
+            import sys
+            print >>sys.stderr, "ERROR:",e.message
+            from env_manager import tag_line
+            print tag_line
+            res=127
+        sys.exit(res)

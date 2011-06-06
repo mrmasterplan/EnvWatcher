@@ -173,17 +173,23 @@ class EWDiffObject(object):
     
     def DoPathDiff(self, old, new):
         # Find out if we can do this.
-        if not (    isinstance(old,EWVariableObject)
-                    and isinstance(new, EWVariableObject)
-                    and ( old.IsPathVariable()
-                        or new.IsPathVariable() ) ):
+        if not ( ( isinstance(old,EWVariableObject) and old.IsPathVariable() )
+                    or ( isinstance(new,EWVariableObject) and new.IsPathVariable() ) ):
             return False
         
         # We now expect this to be path-like.
         
         # determine which paths were added, and which removed.
-        oldpaths = old.value.split(":")
-        newpaths = new.value.split(":")
+        try:
+            oldpaths = old.value.split(":")
+        except:
+            oldpaths = []
+        
+        try:
+            newpaths = new.value.split(":")
+        except:
+            newpaths = []
+        
         while "" in oldpaths:
             del oldpaths[oldpaths.index("")]
         while "" in newpaths:
@@ -229,6 +235,8 @@ class EWDiffObject(object):
         return True
     
     def ApplySwap(self,inv,li):
+        if inv[0] not in li or inv[1] not in li:
+            return
         ind1 = li.index(inv[0])
         ind2 = li.index(inv[1])
         li[ind1],li[ind2] = li[ind2],li[ind1]
