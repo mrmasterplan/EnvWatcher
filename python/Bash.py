@@ -7,7 +7,10 @@ from StringIO import StringIO
 from EnvironmentObjects import EnvVariable, LocVariable, LocFunction, Alias, EWObjKey
 
 def EscapeSingleQuotes(line):
-    return line.replace("'","\\'")
+    if len(line) >2 and line[0]=="'" and line[-1]=="'":
+        return line[1:-1].replace("'","'\\''")
+    else:
+        return line.replace("'","'\\''")
 
 class BashEnvVariable(EnvVariable):
     """docstring for BashEnvVariable"""
