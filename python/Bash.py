@@ -14,7 +14,7 @@ class BashEnvVariable(EnvVariable):
     _pattern = re.compile("""^(?P<name>[^= ]+?)=(?P<value>.*)\n?$""")
         
     def DefineCode(self):
-        return "export %s='%s';" % (self._name, self._value)
+        return "export %s=%s;" % (self._name, self._value)
     
     def RemoveCode(self):
         return "unset %s;\n" % self.name 
@@ -26,7 +26,7 @@ class BashLocVariable(LocVariable):
     _pattern = re.compile("""^(?P<name>[^= ]+?)=(?P<value>.*)\n?$""")
     
     def DefineCode(self):
-        return "%s='%s';" % (self._name, self._value)
+        return "%s=%s;" % (self._name, self._value)
     
     def RemoveCode(self):
         return "unset %s;\n" % self.name 
@@ -53,10 +53,10 @@ class BashLocFunction(LocFunction):
 
 class BashAlias(Alias):
     """docstring for BashAlias"""
-    _pattern = re.compile("""^alias (?P<name>[^=]+)='(?P<value>.*)'\n?$""")
+    _pattern = re.compile("""^alias (?P<name>[^=]+)=(?P<value>.*)\n?$""")
         
     def DefineCode(self):
-        return "alias %s='%s';" % (self._name, self._value)
+        return "alias %s=%s;" % (self._name, self._value)
     
     def RemoveCode(self):
         return "unalias %s\n" % self.name
