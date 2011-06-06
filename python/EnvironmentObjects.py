@@ -120,8 +120,8 @@ class EWVariableObject(EWObject):
         
         import os
         # find out if any of the paths in value exist if value is of the form: path1:path2:path
-        #valexists = reduce(lambda x,y: x or os.path.exists(y), self.value.split(":"), False)
-        valexists = any( [ os.path.exists(path) for path in self.value.split(":") ] )
+        valexists = reduce(lambda x,y: x or os.path.exists(y), self.value.split(":"), False)
+        # valexists = any( [ os.path.exists(path) for path in self.value.split(":") ] )
         
         # this is my best shot at guessing if this should be a path-like variable.
         return pathlikename or valexists
