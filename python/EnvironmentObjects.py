@@ -175,8 +175,8 @@ class EWDiffObject(object):
         # Find out if we can do this.
         if not (    isinstance(old,EWVariableObject)
                     and isinstance(new, EWVariableObject)
-                    and old.IsPathVariable()
-                    and new.IsPathVariable() ):
+                    and ( old.IsPathVariable()
+                        or new.IsPathVariable() ) ):
             return False
         
         # We now expect this to be path-like.

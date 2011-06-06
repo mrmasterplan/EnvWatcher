@@ -64,13 +64,13 @@ def main():
     
     
 if __name__ == '__main__':
-    main()
-    # try:
-    #     res=main()
-    # except Exception, e:
-    #     import sys
-    #     print >>sys.stderr, "ERROR:",e.message
-    #     from env_manager import tag_line
-    #     print tag_line
-    #     res=127
-    # sys.exit(res)
+    # main()
+    try:
+        res=main()
+    except Exception, e:
+        import sys
+        print >>sys.stderr, "ERROR:",e.message
+        from env_manager import tag_line
+        print tag_line
+        res=127
+    sys.exit(res)

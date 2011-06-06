@@ -95,9 +95,13 @@ class BashInteractor(object):
         
         env_dict = {}
         for line in intext:
+            if not line:
+                continue
             if line == self._env_tag:
                 break
         for line in intext:
+            if not line:
+                continue
             if line == self._loc_tag:
                 break
             # Now ready to parse environment
@@ -108,6 +112,8 @@ class BashInteractor(object):
                 continue
             env_dict[obj.key()] = obj
         for line in intext:
+            if not line:
+                continue
             if line == self._ali_tag:
                 break
             # Now ready to parse local variables
@@ -131,6 +137,8 @@ class BashInteractor(object):
             env_dict[obj.key()] = obj
         
         for line in intext:
+            if not line:
+                continue
             # Now ready to parse alias
             assert( BashAlias.Matches(line) )
             obj = BashAlias.Parse(line)

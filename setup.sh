@@ -27,8 +27,6 @@ $(alias)
 	if [ ! -z "$( echo ${output} | grep 'CODE_FOLLOWS>>' )" ]
 		then
 		echo -n "${output%%CODE_FOLLOWS>>*}"
-		# echo "Now comes code:"
-		# echo "${output##*CODE_FOLLOWS>>}"
 		eval "${output##*CODE_FOLLOWS>>}"
 	else
 		echo "${output}"

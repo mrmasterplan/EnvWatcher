@@ -160,4 +160,4 @@ class env_manager(object):
     
         
     actions = [ usage, start, stop, undo, redo, list, display ]
-    action_names = { a.func_name:a for a in actions }
+    action_names = dict( [ (a.func_name,a) for a in actions ] )
