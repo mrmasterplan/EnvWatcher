@@ -37,7 +37,7 @@ def main():
     
     import argparse
     parser = argparse.ArgumentParser(description='Monitor the shell environment')
-    parser.add_argument("-d", action="store_const", const=True, default=False, help="enable debug mode")
+    parser.add_argument("-d","--debug", action="store_const", const=True, default=False, help="enable debug mode")
     parser.add_argument("action",action="store", choices=env_manager.action_names, help="action to perform. Use 'usage' for full explanations.")
     parser.add_argument("name",action="store", nargs="?", default="",help="Chosen name for the recording session.")
     
@@ -48,9 +48,10 @@ def main():
         print >>sys.stderr, "The action '%s' requires the 'name' argument." % args.action
         return 127
     
-    log=open(main_directory+"/log.tmp","w")
-    log.write(all_input)
-    log.close()
+    if args.debug:
+        log=open(main_directory+"/log.tmp","w")
+        log.write(all_input)
+        log.close()
     
     
     from ShellParser import GetShellParser
@@ -66,7 +67,7 @@ def main():
     
 if __name__ == '__main__':
     import sys
-    if "-d" in sys.argv:
+    if "-d" in sys.argv or "--debug" in sys.argv:
         main()
     else:
         try:
