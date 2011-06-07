@@ -1,6 +1,8 @@
 This is EnvWatcher.
 ===================
-A project by Simon Heisterkamp (heisterkamp@nbi.dk)
+A project by Simon Heisterkamp.
+  Please send comments/suggestions/bugs to EnvWatcher@gmail.com)
+  ( Please also read the section below on reporting bugs. )
 
 Requirements
 ============
@@ -38,3 +40,14 @@ The env-watcher monitors
     - shell functions
     - aliases
 
+BUGS
+====
+
+In the unlikely event that you encounter any bigs *ahem* please do the following:
+  - Repeat the steps that lead you to the bug using debug-mode in each step.
+    Debug mode is enabled by including the -d option on the command line.
+  - Send me the entire output of your session.
+  - Send me the log-file that is located in $ENV_WATCHER_DIR/log.tmp
+    (Only gets written in debug mode.)
+Please send all of the above information to EnvWatcher@gmail.com
+Thank you. I will hopefully get back to you soon.

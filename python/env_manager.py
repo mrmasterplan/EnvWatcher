@@ -148,13 +148,13 @@ class env_manager(object):
             for name in session_files:
                 print "\t%s"%re.search(self.session_match,name).group("name")
         else:
-            print "\tNo open sessions."
+            print "\tnone"
         print "Avaliable records:"
         if state_files:
             for name in state_files:
                 print "\t%s"%re.search(self.state_match,name).group("name")
         else:
-            print "\tNo records avaliable."
+            print "\tnone"
         print tag_line
         return 0
     

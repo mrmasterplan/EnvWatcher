@@ -2,38 +2,39 @@
     env-watcher
     ===========
 
-  The intention of this tool is to allow you to determine the
+  The purpose of this tool is to allow you to determine the
   differences in your environment between two points in time,
   and to undo and reapply those differences at a later time.
 
   Usage is as follows:
 
-  env-watcher usage
+ $ env-watcher usage
     Print this usage information.
 
-  env-watcher start MyName
+ $ env-watcher start MyName
     Start a recording session called "MyName".
 
-  env-watcher stop MyName
+ $ env-watcher stop MyName
     Stop the recording session called "MyName".
     The difference between the start and the stop point will
     be saved to a state called "MyName" and are now available
     for undoing and redoing.
 
-  env-watcher undo MyName
+ $ env-watcher undo MyName
     Revert all changes made to the environment in the recording
     session called "MyName".
-    Can be called on an open session.
+    Can be called on an open session to revert to the inital state.
 
-  env-watcher redo MyName
+ $ env-watcher redo MyName
     Reapply the changes made to the environment in the recording
     session called "MyName"
     Can be called on an open session (although this doesn't make much sense).
 
-  env-watcher display MyName
+ $ env-watcher display MyName
     Display a list of changes made to the environment in the 
     recording session called "MyName"
-    Can be called on an open session.
+    Can be called on an open session to view the changes made
+    since the beginning of the session.
   
-  env-watcher list
+ $ env-watcher list
     List the avaliable open recording sessions and closed records.
