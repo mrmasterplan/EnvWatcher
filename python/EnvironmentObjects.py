@@ -1,6 +1,7 @@
 """This mudule defines those properties of Envionmnet objects which I believe to be common to all
 shells."""
 
+from Debug import log
 
 class EWObjKey(object):
     """Serve as an access key to the Environmen Object.
@@ -255,6 +256,7 @@ class EWDiffObject(object):
     
     def ApplySwap(self,inv,li):
         if inv[0] not in li or inv[1] not in li:
+            log("Couldn't apply swap",linversion=inv,list=li)
             return
         ind1 = li.index(inv[0])
         ind2 = li.index(inv[1])

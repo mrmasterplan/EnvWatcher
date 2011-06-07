@@ -129,6 +129,7 @@ class BashInteractor(object):
                         break
             else:
                 print >>sys.stderr,"Warning: unknown bash environment line:\n\t=>"+line
+                log("unknown bash environment line:\n\t=>",line)
                 continue
             #Bash inserts the environment variables into the local variables.
             # I therefore want to make sure this wasn't an EnvVariable
@@ -146,6 +147,7 @@ class BashInteractor(object):
                 continue
             # Now ready to parse alias
             if not BashAlias.Matches(line):
+                log("Warning: unknown bash alias:\n\t=>",line)
                 print >>sys.stderr,"Warning: unknown bash alias:\n\t=>"+line
                 continue
             obj = BashAlias.Parse(line)

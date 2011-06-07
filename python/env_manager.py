@@ -66,8 +66,10 @@ class env_manager(object):
         state_file_name = self.session_dir + os.sep + self.state_pattern % name
         
         if os.path.exists( session_file_name ):
+            log("overwriting session",name)
             print >>sys.stderr, "Warning: Open session '%s' exists. Overwriting." % name
         if os.path.exists( state_file_name ):
+            log("overwriting state", name)
             print >>sys.stderr, "Warning: Saved state '%s' exists. Removing." % name
             import os
             os.remove(state_file_name)
@@ -88,6 +90,7 @@ class env_manager(object):
         if not os.path.exists(session_file_name):
             raise Exception("No recording session with name '%s' found."% name)
         if os.path.exists( state_file_name ):
+            log("overwriting state",name)
             print >>sys.stderr, "Warning: Saved state '%s' exists. Overwriting." % name
         
         #Ok, now we have to make the diff. This is the hard part :)
@@ -114,9 +117,9 @@ class env_manager(object):
         
         env = self.shell.environment
         if not Reverse:
-            print "Now applying changes recorded for session '%s':" %name
+            print "Now applying changes recorded for session '%s'" %name
         else:
-            print "Now reverting changes recorded for session '%s':" %name
+            print "Now reverting changes recorded for session '%s'" %name
         changes = ""
         for k,v in state.iteritems():
             changes += v.Apply(env,Reverse=Reverse) +"\n"
