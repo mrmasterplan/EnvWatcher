@@ -205,6 +205,22 @@ class EWDiffObject(object):
         # find out if any have swapped place:
         oldcommonpaths = [ path for path in oldpaths if path in newpaths]
         newcommonpaths = [ path for path in newpaths if path in oldpaths]
+        
+        # reove duplicates in each list:
+        tmplist = oldcommonpaths[:]
+        oldcommonpaths = []
+        for item in tmplist:
+            if item not in oldcommonpaths:
+                oldcommonpaths.append(item)
+        
+        tmplist = newcommonpaths[:]
+        newcommonpaths = []
+        for item in tmplist:
+            if item not in newcommonpaths:
+                newcommonpaths.append(item)
+                
+                
+                    
         # the two lists now must have the same length:
         assert( len(oldcommonpaths) == len(newcommonpaths))
         indices = [ oldcommonpaths.index(path) for path in newcommonpaths ]
