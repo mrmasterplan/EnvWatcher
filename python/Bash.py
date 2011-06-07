@@ -68,7 +68,6 @@ class BashAlias(Alias):
 class BashInteractor(object):
     """Is able to read and write BASH code"""
     
-    _env_tag = "ENV_WATCHER_ENVIRONMENT>>"
     _loc_tag = "ENV_WATCHER_LOCALS>>"
     _ali_tag = "ENV_WATCHER_ALIAS>>"
     
@@ -95,32 +94,14 @@ class BashInteractor(object):
         
     def ParseAll(self,text):
         intext = iter(text.splitlines())
+        import os
         
         env_dict = {}
         for line in intext:
             if not line:
                 continue
-            if line == self._env_tag:
-                break
-        lastobj = BashEnvVariable("dummy")
-        for line in intext:
-            if not line:
-                continue
             if line == self._loc_tag:
                 break
-            # Now ready to parse environment
-            # every line here has be be of the same form
-            if not BashEnvVariable.Matches(line):
-                # For now I will assume this belongs to the last value:
-                # TODO: Look for unclosed {} in the last value before making this assumption 
-                # print >>sys.stderr,"Warning: unknown bash environment line:\n\t=>"+line
-                lastobj.value+="\n"+line
-                continue
-            obj = BashEnvVariable.Parse(line)
-            lastobj=obj
-            if obj.name in self.ignore:
-                continue
-            env_dict[obj.key()] = obj
         for line in intext:
             if not line:
                 continue
@@ -131,16 +112,16 @@ class BashInteractor(object):
             if BashLocVariable.Matches(line):
                 obj = BashLocVariable.Parse(line)
                 #Bash inserts the environment variables into the local variables.
-                # I therefore want to make sure this wasn't already an EnvVariable
-                if EWObjKey( BashEnvVariable, obj.name ) in env_dict:
-                    continue
+                # I therefore want to make sure this wasn't an EnvVariable
+                if obj.name in os.environ:
+                    obj = BashEnvVariable(obj.name, obj.value)
             elif BashLocFunction.Matches(line):
                 obj = BashLocFunction.Parse(line)
                 for line in intext:
                     if obj.ParseBodyLine(line):
                         break
             else:
-                print >>sys.stderr,"Warning: unknown bash local environment line:\n\t=>"+line
+                print >>sys.stderr,"Warning: unknown bash environment line:\n\t=>"+line
                 continue
             if obj.name in self.ignore:
                 continue
