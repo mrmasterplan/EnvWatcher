@@ -5,6 +5,7 @@ import re
 from StringIO import StringIO
 
 from EnvironmentObjects import EnvVariable, LocVariable, LocFunction, Alias, EWObjKey
+from Debug import log
 
 def EscapeSingleQuotes(line):
     if len(line) >2 and line[0]=="'" and line[-1]=="'":
@@ -93,6 +94,7 @@ class BashInteractor(object):
     
         
     def ParseAll(self,text):
+        log("Now Parsing bash environment")
         env_dict = {}
         
         # first get the environment:

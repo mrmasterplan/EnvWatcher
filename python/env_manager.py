@@ -4,6 +4,8 @@ import os
 import sys
 import pickle
 
+from Debug import log
+
 tag_line = "CODE_FOLLOWS>>"
 
 class env_manager(object):
@@ -19,7 +21,7 @@ class env_manager(object):
         self.shell = shell
         self.session_dir = session_dir
         self.main_dir = main_dir
-        
+        log("initialized the EnvManager")
     
     def SanityCheckName(self,name):
         if not re.match("""[a-zA-Z0-9_]+""", name):
