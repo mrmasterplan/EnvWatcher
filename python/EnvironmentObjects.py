@@ -118,13 +118,16 @@ class EWVariableObject(EWObject):
         pat = re.compile("path", re.IGNORECASE)
         pathlikename = bool(pat.search(self._name))
         
+        # find out if value is of the form: path1:path2:path
+        colonlist =  len( self.value.split(":") ) > 1
+        
         import os
-        # find out if any of the paths in value exist if value is of the form: path1:path2:path
-        valexists = reduce(lambda x,y: x or os.path.exists(y), self.value.split(":"), False)
-        # valexists = any( [ os.path.exists(path) for path in self.value.split(":") ] )
+        # find out if the paths exists
+        exists = os.path.exists( self.value )
+        
         
         # this is my best shot at guessing if this should be a path-like variable.
-        return pathlikename or valexists
+        return pathlikename or colonlist or exists
     
 
 
