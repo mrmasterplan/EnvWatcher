@@ -30,7 +30,7 @@ it. One can then ask the env-watcher to undo those changes.
 In its functionality the env-watcher is not unlike other dynamic environment loaders
 like, for example, 'module' (http://modules.sourceforge.net/). However, module requires
 the user to write special tcl modules in order to be able to load and unload them. The
-advantage of env-wrapper is that it can accept and recognize changes made by any other
+advantage of env-watcher is that it can accept and recognize changes made by any other
 shell-script because it relies on 'before' and 'after' snapshots of the shell
 environment.
 
@@ -43,7 +43,7 @@ The env-watcher monitors
 BUGS
 ====
 
-In the unlikely event that you encounter any bigs *ahem* please do the following:
+In the unlikely event that you encounter any bugs *ahem* please do the following:
   - Repeat the steps that lead you to the bug using debug-mode in each step.
     Debug mode is enabled by including the -d option on the command line.
   - Send me the entire output of your session.
