@@ -14,10 +14,10 @@ def EscapeSingleQuotes(line):
 
 class BashEnvVariable(EnvVariable):
     """docstring for BashEnvVariable"""
-    _pattern = re.compile("""^(?P<name>[^= ]+?)=(?P<value>.*)\n?$""")
+    _pattern = re.compile("""^(?P<name>[^= '"/\\\\]+?)=(?P<value>.*)\n?$""")
         
     def DefineCode(self):
-        return "export %s='%s';" % (self._name, EscapeSingleQuotes(self._value))
+        return "export %s=%s;" % (self._name,self._value)
     
     def RemoveCode(self):
         return "unset %s;\n" % self.name 
@@ -26,10 +26,10 @@ class BashEnvVariable(EnvVariable):
 
 class BashLocVariable(LocVariable):
     """docstring for BashLocVariable"""
-    _pattern = re.compile("""^(?P<name>[^= ]+?)=(?P<value>.*)\n?$""")
+    _pattern = re.compile("""^(?P<name>[^= '"/\\\\]+?)=(?P<value>.*)\n?$""")
     
     def DefineCode(self):
-        return "%s='%s';" % (self._name, EscapeSingleQuotes(self._value))
+        return "%s=%s;" % (self._name, self._value)
     
     def RemoveCode(self):
         return "unset %s;\n" % self.name 
@@ -93,10 +93,19 @@ class BashInteractor(object):
     
         
     def ParseAll(self,text):
-        intext = iter(text.splitlines())
-        import os
-        
         env_dict = {}
+        
+        # first get the environment:
+        import os
+        for name,value in os.environ.iteritems():
+            # honor the ignore configuration
+            if name in self.ignore:
+                continue
+            obj = BashEnvVariable(name, value)
+            env_dict[obj.key()] = obj
+        
+        # next parse the text that was passed on from the function.
+        intext = iter(text.splitlines())
         for line in intext:
             if not line:
                 continue
@@ -111,10 +120,6 @@ class BashInteractor(object):
             # The locals can eiter be variables or functions
             if BashLocVariable.Matches(line):
                 obj = BashLocVariable.Parse(line)
-                #Bash inserts the environment variables into the local variables.
-                # I therefore want to make sure this wasn't an EnvVariable
-                if obj.name in os.environ:
-                    obj = BashEnvVariable(obj.name, obj.value)
             elif BashLocFunction.Matches(line):
                 obj = BashLocFunction.Parse(line)
                 for line in intext:
@@ -123,6 +128,12 @@ class BashInteractor(object):
             else:
                 print >>sys.stderr,"Warning: unknown bash environment line:\n\t=>"+line
                 continue
+            #Bash inserts the environment variables into the local variables.
+            # I therefore want to make sure this wasn't an EnvVariable
+            if obj.name in os.environ:
+                continue
+            
+            # honor the ignore configuration
             if obj.name in self.ignore:
                 continue
             
@@ -136,12 +147,14 @@ class BashInteractor(object):
                 print >>sys.stderr,"Warning: unknown bash alias:\n\t=>"+line
                 continue
             obj = BashAlias.Parse(line)
+            
+            # honor the ignore configuration
             if obj.name in self.ignore:
                 continue
             env_dict[obj.key()] = obj
         
         # for k, v in env_dict.iteritems():
-        #     print repr(v)#v.DefineCode()
+        #     print v.DefineCode()
         return env_dict
     
 

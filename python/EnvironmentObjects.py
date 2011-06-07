@@ -249,7 +249,7 @@ class EWDiffObject(object):
             out+="\t   removed: "+repr(self.removed)+"\n"
             out+="\tinversions: "+repr(self.inversions)+"\n}"
         else:
-            out+=" { '%s' => '%s' }" %(repr(self.old),repr(self.new))
+            out+=" { %s => %s }" %(repr(self.old),repr(self.new))
         return out
     
     def Display(self):

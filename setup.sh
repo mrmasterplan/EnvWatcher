@@ -14,11 +14,7 @@ unset previous_OLDPWD
 export ENV_WATCHER_SESSION=$(python -c "import tempfile; print tempfile.mkdtemp(prefix='EnvWatcher_session_')")
 
 function env-watcher {
-	export ENV_WATCHER_INPUT="ENV_WATCHER_LOCALS>>
-$(set)
-ENV_WATCHER_ALIAS>>
-$(alias)
-"
+	export ENV_WATCHER_INPUT="ENV_WATCHER_LOCALS>>"$'\n'"$(set)"$'\n'"ENV_WATCHER_ALIAS>>"$'\n'"$(alias)"
 	local output="$( ${ENV_WATCHER_DIR}/python/env-watcher $@ )"
 	unset ENV_WATCHER_INPUT
 
