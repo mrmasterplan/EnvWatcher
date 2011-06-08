@@ -20,8 +20,8 @@ session_directory = os.environ["ENV_WATCHER_SESSION"]
 main_directory = os.environ["ENV_WATCHER_DIR"]
 
 if not session_directory or not main_directory:
-    print >>sys.stderr, "Your EnvWatcher environment was not properly set up. Please use the included setup.sh file."
-    sys.exit(127)
+	print >>sys.stderr, "Your EnvWatcher environment was not properly set up. Please use the included setup.sh file."
+	sys.exit(127)
 
 # if this fails then there is nothing I can do:
 sys.path.append(os.environ["ENV_WATCHER_DIR"]+os.sep+"python")
@@ -29,49 +29,54 @@ sys.path.append(os.environ["ENV_WATCHER_DIR"]+os.sep+"python")
 from Debug import log
 
 def main():
-    all_input = os.environ["ENV_WATCHER_INPUT"]
-    log(all_input)    
-    
-    if not all_input:
-        raise Exception("This executable needs to be called from within the shell function env-watcher.\nPlease source the relevant setup script and procceed from there.")
-        
-    from env_manager import env_manager
-    
-    import argparse
-    parser = argparse.ArgumentParser(description='Monitor the shell environment')
-    parser.add_argument("-d","--debug", action="store_const", const=True, default=False, help="enable debug mode")
-    parser.add_argument("action",action="store", choices=env_manager.action_names, help="action to perform. Use 'usage' for full explanations.")
-    parser.add_argument("name",action="store", nargs="?", default="",help="Chosen name for the recording session.")
-    
-    log("Command line:",sys.argv)
-    args=parser.parse_args(sys.argv[1:])
-    log("Parsed arguments",args)
-    
-    action=env_manager.action_names[args.action]
-    import inspect
-    if "name" in inspect.getargspec(action)[0] and not args.name:
-        raise Exception("The action '%s' requires the 'name' argument." % args.action)
-    
-    
-    from ShellParser import GetShellParser
-    shellParser = GetShellParser(os.environ["SHELL"])
-    
-    shell = shellParser(conf_dir=main_directory+"/config", input=all_input)
-    
-    manager = env_manager(shell=shell, session_dir=session_directory, main_dir=main_directory)
-    
-    return action(manager,name=args.name)
-    
-    
-    
+	all_input = os.environ["ENV_WATCHER_INPUT"]
+	
+	if not all_input:
+		raise Exception("This executable needs to be called from within the shell function env-watcher.\nPlease source the relevant setup script and procceed from there.")
+		
+	from env_manager import env_manager
+	
+	import argparse
+	parser = argparse.ArgumentParser(description='Monitor the shell environment')
+	parser.add_argument("-d","--debug", action="store_const", const=True, default=False, help="enable debug mode")
+	parser.add_argument("-f","--force", action="store_const", const=True, default=False, help="no questions asked. Overwriting is default.")	
+	parser.add_argument("action",action="store", choices=env_manager.action_names, help="action to perform. Use 'usage' for full explanations.")
+	parser.add_argument("name",action="store", nargs="?", default="",help="Chosen name for the recording session.")
+	
+	log("Command line:",sys.argv)
+	args=parser.parse_args(sys.argv[1:])
+	log("Parsed arguments",args)
+	
+	action=env_manager.action_names[args.action]
+	import inspect
+	if "name" in inspect.getargspec(action)[0] and not args.name:
+		raise Exception("The action '%s' requires the 'name' argument." % args.action)
+	
+	
+	from ShellParser import GetShellParser
+	shellParser = GetShellParser(os.environ["SHELL"])
+	
+	shell = shellParser(conf_dir=main_directory+"/config", input=all_input)
+	
+	manager = env_manager(shell=shell, session_dir=session_directory, main_dir=main_directory)
+	
+	return action(manager,name=args.name)
+	
+	
+	
 if __name__ == '__main__':
-    try:
-        res=main()
-    except Exception, e:
-        import sys
-        print >>sys.stderr, "ERROR:",e
-        from env_manager import tag_line
-        log()
-        print tag_line
-        res=127
-    sys.exit(res)
+	res=127
+	try:
+		res=main()
+	except SystemExit:
+		log()
+	except Exception, e:
+		print >>sys.stderr, "ERROR:",message
+		log()
+	except KeyboardInterrupt:
+		log()
+	except:
+		import sys
+		print >>sys.stderr, "Unknown error:",sys.exc_value,sys.exc_type
+		log()
+	sys.exit(res)

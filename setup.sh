@@ -1,5 +1,5 @@
 #
-# This is setup.sh, the setup script of EnvWathcer for the Bourne Again SHell
+# This is setup.sh, the setup script of EnvWatcher for the Bourne Again SHell
 # This file needs to be sourced. It cannot be executed.
 
 previous_PWD=$PWD

@@ -17,6 +17,10 @@ Simply source the script setup.sh
     $ source path/to/EnvWatcher/setup.sh
 
 You will now have access to the command env-watcher.
+A short help message showing the available command-line options is shown when calling
+
+    $ env-watcher --help
+    
 Full usage information can be found in the file usage.txt or by calling 
 
     $ env-watcher usage
@@ -39,6 +43,58 @@ The env-watcher monitors
     - local variables
     - shell functions
     - aliases
+
+Example Session
+===============
+
+Here I am showing an example session of things that one can de with the env-watcher:
+
+    simon> source EnvWatcher/setup.sh 
+    simon> env-watcher start mysession
+    Started recording session 'mysession'
+
+the session 'mysession' is now started. Any changes to the environment from now on
+will be saved.
+
+    simon> foo=bar
+    simon> export hello=world
+    simon> export PYTHONPATH="$PWD/EnvWatcher/python:${PYTHONPATH}"
+    simon> env-watcher stop mysession
+    Saved record with name 'mysession'
+
+we can view the available records with "list":
+
+    simon> env-watcher list
+    No open sessions.
+    Avaliable records:
+    	mysession
+
+to see the differences we can use "display":
+
+    simon> env-watcher display mysession
+    BashEnvVariable("PYTHONPATH"):
+    { Path difference:
+         added: /Users/simon/code/EnvWatcher/python
+    }
+    BashLocVariable("foo"): { n/a => 'bar' }
+    BashEnvVariable("hello"): { n/a => 'world' }
+
+The env-watcher noticed the shell and environment variables that we added.
+I also detected that a path was added to the PYTHONPATH. We can now undo those
+changes by using "undo":
+
+    simon> env-watcher undo mysession
+    Now reverting changes recorded for session 'mysession'
+
+Finally we verify that our changes have been reverted.
+
+    simon> echo $foo
+
+    simon> echo $bar
+
+    simon> echo $PYTHONPATH | grep EnvWatcher
+    simon> 
+
 
 BUGS
 ====
