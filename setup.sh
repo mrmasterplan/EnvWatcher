@@ -27,3 +27,5 @@ function env-watcher {
 	fi
 	
 }
+
+complete -W "usage start stop undo redo display list" env-watcher
