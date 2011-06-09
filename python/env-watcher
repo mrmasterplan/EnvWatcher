@@ -71,7 +71,7 @@ if __name__ == '__main__':
 	except SystemExit:
 		log()
 	except Exception, e:
-		print >>sys.stderr, "ERROR:",message
+		print >>sys.stderr, "ERROR:",e
 		log()
 	except KeyboardInterrupt:
 		log()

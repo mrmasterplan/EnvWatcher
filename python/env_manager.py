@@ -240,8 +240,6 @@ class env_manager(object):
 		except:
 			log()
 			log("session wans't available. making it.")
-			diff = None
-		if not diff:
 			try:
 				diff = self.ConstructDifference(self.GetSession(name), self.shell.environment)
 			except:
@@ -261,6 +259,24 @@ class env_manager(object):
 		# Remove the session file, thereby closing the session
 		import os
 		os.remove(self.SessionName(name))
+	
+	
+	def GetAllNames(self):
+		import os, glob, re
+		log("Session Dir",os.listdir(self.session_dir))
+		
+		session_files = glob.glob(self.SessionName("*",nocheck=True))
+		session_match = re.compile(os.sep+os.path.basename(self.SessionName("(?P<name>.*?)",nocheck=True))+"$")
+		session_names = []
+		for filename in session_files:
+			session_names.append(session_match.search(filename).group("name"))
+		
+		state_files = glob.glob(self.StateName("*",nocheck=True))
+		state_match = re.compile(os.sep+os.path.basename(self.StateName("(?P<name>.*)",nocheck=True))+"$")
+		state_names = []
+		for filename in state_files:
+			state_names.append(state_match.search(filename).group("name"))
+		return session_names, state_names
 	
 	
 	# the following defines the set of possible actions that a user can choose from.
@@ -347,25 +363,19 @@ class env_manager(object):
 	
 	
 	def list(self,**kwargs):
-		import os, glob, re
-		log("Session Dir",os.listdir(self.session_dir))
+		session_names, state_names = self.GetAllNames()
 		
-		session_files = glob.glob(self.SessionName("*",nocheck=True))
-		session_match = re.compile(os.sep+os.path.basename(self.SessionName("(?P<name>.*?)",nocheck=True))+"$")
-		
-		if session_files:
+		if session_names:
 			print "Open sessions:"
-			for name in session_files:
-				print "\t%s"%session_match.search(name).group("name")
+			for name in session_names:
+				print "\t%s"%name
 		else:
 			print "No open sessions."
 		
-		state_files = glob.glob(self.StateName("*",nocheck=True))
-		state_match = re.compile(os.sep+os.path.basename(self.StateName("(?P<name>.*)",nocheck=True))+"$")
-		if state_files:
+		if state_names:
 			print "Avaliable records:"
-			for name in state_files:
-				print "\t%s"%state_match.search(name).group("name")
+			for name in state_names:
+				print "\t%s"%name
 		else:
 			print "No saved records."
 		print tag_line

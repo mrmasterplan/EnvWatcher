@@ -28,4 +28,4 @@ function env-watcher {
 	
 }
 
-complete -W "usage start stop undo redo display list" env-watcher
+complete -o nospace -C $ENV_WATCHER_DIR/python/env_watcher_completion.py env-watcher
