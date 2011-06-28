@@ -29,7 +29,7 @@ class BashEnvVariable(EnvVariable):
 
 class BashLocVariable(LocVariable):
 	"""docstring for BashLocVariable"""
-	_pattern = re.compile("""^(?P<name>[^= '"/\\\\]+?)=(?P<value>.*)\n?$""")
+	_pattern = re.compile("""^(?P<name>[^= '"\\\\]+?)=(?P<value>.*)\n?$""")
 	
 	def DefineCode(self):
 		return "%s=%s;" % (self._name, self._value)
