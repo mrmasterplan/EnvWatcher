@@ -22,7 +22,7 @@ class Logger(object):
             except:
                 pass
         else:
-            print >>sys.stderr,"Unable to open any of there files for logging:", self.altfiles
+            print >>sys.stderr,"Unable to open any of these files for logging:", self.altfiles
     
     def __call__(self, *args, **kwargs):
         caller = traceback.extract_stack()[-2]

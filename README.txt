@@ -47,7 +47,7 @@ The env-watcher monitors
 Example Session
 ===============
 
-Here I am showing an example session of things that one can de with the env-watcher:
+Here I am showing an example session of things that one can do with the env-watcher:
 
     simon> source EnvWatcher/setup.sh 
     simon> env-watcher start mysession
