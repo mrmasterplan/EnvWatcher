@@ -2,14 +2,7 @@
 # This is setup.sh, the setup script of EnvWatcher for the Bourne Again SHell
 # This file needs to be sourced. It cannot be executed.
 
-previous_PWD=$PWD
-previous_OLDPWD=$OLDPWD
-cd $(dirname $BASH_SOURCE)
-export ENV_WATCHER_DIR="$(pwd)"
-cd $previous_PWD
-OLDPWD=$previous_OLDPWD
-unset previous_PWD
-unset previous_OLDPWD
+export ENV_WATCHER_DIR="$( cd $( dirname "${BASH_SOURCE[0]}" ) && pwd )"
 
 export ENV_WATCHER_SESSION=$(python -c "import tempfile; print tempfile.mkdtemp(prefix='EnvWatcher_session_')")
 
